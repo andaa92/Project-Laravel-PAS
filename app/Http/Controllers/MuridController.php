@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Murid;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MuridController extends Controller
 {
-    public function index() {
-        return response()->json(Murid::with('user')->get());
+    public function index()
+    {
+        $murid = Murid::with('user')->get();
+        return view('murid.index', compact('murid'));
     }
 
-    public function store(Request $request) {
+    public function create()
+    {
+        $users = User::all();
+        return view('murid.create', compact('users'));
+    }
+
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'nama' => 'required',
             'nis' => 'required|unique:murid',
@@ -22,31 +32,40 @@ class MuridController extends Controller
             'id_user' => 'required|exists:users,id',
         ]);
 
-        $murid = Murid::create($validated);
-        return response()->json($murid, 201);
+        Murid::create($validated);
+        return redirect()->route('murid.index')->with('success', 'Data murid berhasil ditambahkan');
     }
 
-    public function show(Murid $murid) {
-        return response()->json($murid->load('user'));
+    public function show(Murid $murid)
+    {
+        return view('murid.show', compact('murid'));
     }
 
-    public function update(Request $request, Murid $murid) {
+    public function edit(Murid $murid)
+    {
+        $users = User::all();
+        return view('murid.edit', compact('murid', 'users'));
+    }
+
+    public function update(Request $request, Murid $murid)
+    {
         $validated = $request->validate([
-            'nama' => 'sometimes',
-            'nis' => 'sometimes|unique:murid,nis,' . $murid->id,
-            'kelas' => 'sometimes',
-            'no_telp' => 'sometimes',
-            'jenis_kelamin' => 'sometimes|in:L,P',
-            'tgl_lahir' => 'sometimes|date',
-            'id_user' => 'sometimes|exists:users,id',
+            'nama' => 'sometimes|required',
+            'nis' => 'sometimes|required|unique:murid,nis,' . $murid->id,
+            'kelas' => 'sometimes|required',
+            'no_telp' => 'sometimes|required',
+            'jenis_kelamin' => 'sometimes|required|in:L,P',
+            'tgl_lahir' => 'sometimes|required|date',
+            'id_user' => 'sometimes|required|exists:users,id',
         ]);
 
         $murid->update($validated);
-        return response()->json($murid);
+        return redirect()->route('murid.index')->with('success', 'Data murid berhasil diperbarui');
     }
 
-    public function destroy(Murid $murid) {
+    public function destroy(Murid $murid)
+    {
         $murid->delete();
-        return response()->json(null, 204);
+        return redirect()->route('murid.index')->with('success', 'Data murid berhasil dihapus');
     }
 }
