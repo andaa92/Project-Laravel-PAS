@@ -169,7 +169,7 @@ class MuridSeeder extends Seeder
             'id_user' => 31,
         ]);
 
-        // Lanjutkan dengan data murid lainnya sesuai format yang sama.
+        
     }
 }
 

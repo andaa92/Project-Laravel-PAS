@@ -7,57 +7,53 @@ use Illuminate\Http\Request;
 
 class MataPelajaranController extends Controller
 {
-    // Menampilkan semua mata pelajaran (untuk API)
-    public function index() {
-        return response()->json(MataPelajaran::all());
+    public function index()
+    {
+        $mataPelajaran = MataPelajaran::all();
+        return view('mata-pelajaran.index', compact('mataPelajaran'));
     }
 
-    // Menampilkan form untuk menambah mata pelajaran
-    public function create() {
-        return view('mata-pelajaran.create');  // Mengembalikan tampilan Blade untuk form tambah mata pelajaran
+    public function create()
+    {
+        return view('mata-pelajaran.create');
     }
 
-    // Menyimpan data mata pelajaran yang baru
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
-            'nama' => 'required|unique:mata_pelajaran',
+            'kode' => 'required|string|max:10|unique:mata_pelajaran,kode',
+            'nama' => 'required|string|max:255',
         ]);
 
-        // Menyimpan mata pelajaran ke database
-        $mp = MataPelajaran::create($validated);
+        MataPelajaran::create($validated);
 
-        // Mengalihkan ke halaman daftar mata pelajaran dengan pesan sukses
         return redirect()->route('mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil ditambahkan');
     }
 
-    // Menampilkan detail mata pelajaran berdasarkan ID (untuk API)
-    public function show(MataPelajaran $mataPelajaran) {
-        return response()->json($mataPelajaran);
+    public function edit($id)
+    {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
+        return view('mata-pelajaran.edit', compact('mataPelajaran'));
     }
 
-    // Menampilkan form untuk mengedit mata pelajaran
-    public function edit(MataPelajaran $mataPelajaran) {
-        return view('mata-pelajaran.edit', compact('mataPelajaran'));  // Mengembalikan tampilan Blade untuk edit
-    }
+    public function update(Request $request, $id)
+    {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
 
-    // Mengupdate data mata pelajaran yang sudah ada
-    public function update(Request $request, MataPelajaran $mataPelajaran) {
         $validated = $request->validate([
-            'nama' => 'required|unique:mata_pelajaran,nama,' . $mataPelajaran->id,
+            'nama' => 'required|string|max:255',
         ]);
 
-        // Mengupdate data mata pelajaran
         $mataPelajaran->update($validated);
 
-        // Mengalihkan ke halaman daftar mata pelajaran dengan pesan sukses
-        return redirect()->route('mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil diperbarui');
+        return redirect()->route('mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil diupdate');
     }
 
-    // Menghapus data mata pelajaran
-    public function destroy(MataPelajaran $mataPelajaran) {
+    public function destroy($id)
+    {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
         $mataPelajaran->delete();
 
-        // Menghapus dan mengalihkan ke halaman daftar mata pelajaran dengan pesan sukses
         return redirect()->route('mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil dihapus');
     }
 }

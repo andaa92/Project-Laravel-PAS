@@ -31,7 +31,7 @@ class NilaiSeeder extends Seeder
             ['id_guru' => 12, 'id_murid' => 3, 'id_mata_pelajaran' => 5, 'nilai' => 65, 'predikat' => 'D', 'semester' => 1],
             ['id_guru' => 6, 'id_murid' => 3, 'id_mata_pelajaran' => 6, 'nilai' => 85, 'predikat' => 'B', 'semester' => 1],
             ['id_guru' => 7, 'id_murid' => 3, 'id_mata_pelajaran' => 7, 'nilai' => 84, 'predikat' => 'B', 'semester' => 1],
-            // Tambahkan data lainnya di sini sesuai kebutuhan
+            
         ];
 
         DB::table('nilai')->insert($data);

@@ -19,10 +19,16 @@
 
         <form action="{{ route('mata-pelajaran.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
-                <label for="nama" class="form-label">Nama Mata Pelajaran</label>
-                <input type="text" name="nama" class="form-control" placeholder="Nama Mata Pelajaran"
-                    value="{{ old('nama') }}" required>
+
+            <div class="form-group mb-3">
+                <label for="kode">Kode Mata Pelajaran</label>
+                <input type="text" name="kode" id="kode" class="form-control" value="{{ old('kode') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="nama">Nama Mata Pelajaran</label>
+                <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}"
+                    required>
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>

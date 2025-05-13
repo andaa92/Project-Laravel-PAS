@@ -10,22 +10,20 @@ class MataPelajaranSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['kode' => 'MTK', 'mata_pelajaran' => 'Matematika'],
-            ['kode' => 'BIN', 'mata_pelajaran' => 'Bahasa Indonesia'],
-            ['kode' => 'BIG', 'mata_pelajaran' => 'Bahasa Inggris'],
-            ['kode' => 'PWEB', 'mata_pelajaran' => 'Pemrograman Web'],
-            ['kode' => 'BADA', 'mata_pelajaran' => 'Basis Data'],
-            ['kode' => 'PAI', 'mata_pelajaran' => 'Pendidikan Agama Islam'],
-            ['kode' => 'PKN', 'mata_pelajaran' => 'Pendidikan Kewarganegaraan'],
+            ['kode' => 'MTK', 'nama' => 'Matematika'],
+            ['kode' => 'BIN', 'nama' => 'Bahasa Indonesia'],
+            ['kode' => 'BIG', 'nama' => 'Bahasa Inggris'],
+            ['kode' => 'PWEB', 'nama' => 'Pemrograman Web'],
+            ['kode' => 'BADA', 'nama' => 'Basis Data'],
+            ['kode' => 'PAI', 'nama' => 'Pendidikan Agama Islam'],
+            ['kode' => 'PKN', 'nama' => 'Pendidikan Kewarganegaraan'],
         ];
 
         foreach ($data as $item) {
             MataPelajaran::firstOrCreate(
-                ['kode' => $item['kode']], // cek berdasarkan kode
-                ['mata_pelajaran' => $item['mata_pelajaran']]
+                ['kode' => $item['kode']],
+                ['nama' => $item['nama']]
             );
         }
     }
 }
-
-

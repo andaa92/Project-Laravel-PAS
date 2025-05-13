@@ -4,46 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index() {
-        return response()->json(User::all());
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
     }
 
-    public function store(Request $request) {
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    public function store(Request $request)
+    {
         $validated = $request->validate([
-            'username' => 'required|unique:users',
-            'password' => 'required',
-            'role' => 'required|in:admin,guru,murid',
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        $validated['password'] = bcrypt($validated['password']);
-        $user = User::create($validated);
-        return response()->json($user, 201);
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
     }
 
-    public function show(User $user) {
-        return response()->json($user);
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user) {
+    public function update(Request $request, User $user)
+    {
         $validated = $request->validate([
-            'username' => 'sometimes|unique:users,username,' . $user->id,
-            'password' => 'sometimes',
-            'role' => 'sometimes|in:admin,guru,murid',
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
-        if (isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
+        if ($request->password) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
         }
 
         $user->update($validated);
-        return response()->json($user);
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui');
     }
 
-    public function destroy(User $user) {
+    public function destroy(User $user)
+    {
         $user->delete();
-        return response()->json(null, 204);
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus');
     }
 }

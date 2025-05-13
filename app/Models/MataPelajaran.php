@@ -11,7 +11,7 @@ class MataPelajaran extends Model
 
     protected $table = 'mata_pelajaran';
 
-    protected $fillable = ['kode', 'mata_pelajaran'];
+    protected $fillable = ['kode', 'nama']; // GUNAKAN 'nama'
 
     public function guru()
     {
@@ -23,5 +23,3 @@ class MataPelajaran extends Model
         return $this->hasMany(Nilai::class, 'id_mata_pelajaran');
     }
 }
-
-

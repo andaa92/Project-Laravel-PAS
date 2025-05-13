@@ -8,11 +8,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('mata_pelajaran', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode')->unique();
-            $table->string('mata_pelajaran');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('kode')->unique();
+    $table->string('nama')->unique(); 
+    $table->timestamps();
+});
+
     }
 
     public function down(): void

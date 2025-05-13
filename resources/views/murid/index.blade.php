@@ -1,30 +1,168 @@
-<table class="table table-bordered mt-3">
-    <thead>
-        <tr>
-            <th>Nama</th>
-            <th>NIS</th>
-            <th>Email</th>
-            <th>JK</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($murid as $item)
-            <tr>
-                <td>{{ $item->nama }}</td>
-                <td>{{ $item->nis }}</td>
-                <td>{{ $item->user->email ?? '-' }}</td>
-                <td>{{ $item->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                <td>
-                    <a href="{{ route('murid.edit', $item->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('murid.destroy', $item->id) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Yakin ingin menghapus data ini?')"
-                            class="btn btn-sm btn-danger">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+@extends('layouts.app')
+
+@section('title', 'Data Murid')
+
+@section('content')
+
+    <h1>Dashboard Murid</h1>
+    <p>Selamat datang, Murid!</p>
+
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-semibold text-blue-800">Data Murid</h1>
+                    <p class="text-blue-600 mt-1">Kelola data murid sekolah</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="{{ route('murid.create') }}"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Tambah Murid
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter & Search Section -->
+            <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <input type="text" placeholder="Cari berdasarkan nama atau NIS..."
+                            class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="flex-1 md:flex-initial">
+                        <select
+                            class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Semua Jenis Kelamin</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <button class="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-blue-100">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                                    Nama</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                                    NIS</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                                    Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                                    Jenis Kelamin</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                                    Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-blue-50">
+                            @foreach ($murid as $item)
+                                <tr class="hover:bg-blue-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <div
+                                                    class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
+                                                    {{ substr($item->nama, 0, 1) }}
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-blue-800">{{ $item->nama }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-800">{{ $item->nis }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-800">
+                                        {{ $item->user->email ?? '-' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($item->jenis_kelamin == 'L')
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Laki-laki
+                                            </span>
+                                        @else
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100 text-pink-800">
+                                                Perempuan
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('murid.edit', $item->id) }}"
+                                                class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('murid.destroy', $item->id) }}" method="POST"
+                                                class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    onclick="return confirm('Yakin ingin menghapus data ini?')"
+                                                    class="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center">
+                <nav class="inline-flex rounded-md shadow-sm">
+                    <a href="#"
+                        class="py-2 px-4 bg-white text-blue-600 border border-blue-200 rounded-l-lg hover:bg-blue-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </a>
+                    <a href="#" class="py-2 px-4 bg-blue-600 text-white border border-blue-600">1</a>
+                    <a href="#"
+                        class="py-2 px-4 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 transition">2</a>
+                    <a href="#"
+                        class="py-2 px-4 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 transition">3</a>
+                    <a href="#"
+                        class="py-2 px-4 bg-white text-blue-600 border border-blue-200 rounded-r-lg hover:bg-blue-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+@endsection
