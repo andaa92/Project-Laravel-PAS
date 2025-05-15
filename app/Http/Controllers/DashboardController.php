@@ -6,30 +6,22 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        $role = Auth::user()->role;
 
-        return match ($role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'guru' => redirect()->route('guru.dashboard'),
-            'murid' => redirect()->route('murid.dashboard'),
-            default => abort(403),
-        };
+
+public function index()
+{
+    $user = Auth::user();
+
+    if (!$user) {
+        return redirect()->route('login'); // Atau tampilkan error
     }
 
-    public function admin()
-    {
-        return view('admin.index');
-    }
+    return match ($user->role) {
+        'admin' => redirect()->route('admin.index'),
+        'guru' => redirect()->route('guru.index'),
+        'murid' => redirect()->route('murid.index'),
+        default => abort(403),
+    };
+}
 
-    public function guru()
-    {
-        return view('guru.index');
-    }
-
-    public function murid()
-    {
-        return view('murid.index');
-    }
 }

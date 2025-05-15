@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MuridController;
 use App\Http\Controllers\NilaiController;
-use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\MataPelajaranController;
 
 
 Route::get('/', function () {
@@ -56,17 +60,24 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-// Admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [DashboardController::class, 'admin'])->name('admin.index');
+
+Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
 });
 
-// Guru routes
-Route::middleware(['auth', 'role:guru'])->group(function () {
-    Route::get('/guru', [DashboardController::class, 'guru'])->name('guru.index');
+Route::middleware(['auth', CheckRole::class . ':guru'])->group(function () {
+    Route::get('/guru/dashboard', [GuruController::class, 'index'])->name('guru.index');
 });
 
-// Murid routes
-Route::middleware(['auth', 'role:murid'])->group(function () {
-    Route::get('/murid', [DashboardController::class, 'murid'])->name('murid.index');
-}); 
+Route::middleware(['auth', CheckRole::class . ':murid'])->group(function () {
+    Route::get('/murid/dashboard', [MuridController::class, 'index'])->name('murid.index');
+});
+
+
+
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);

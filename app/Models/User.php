@@ -12,6 +12,8 @@ class User extends Authenticatable
 
     protected $fillable = [
         'username',
+        'name',
+        'email',
         'password',
         'role',
     ];
@@ -22,7 +24,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        // kosong, tidak masalah
     ];
 
     public function guru()
@@ -34,4 +36,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Murid::class, 'id_user');
     }
+
+    // Tidak perlu accessor setPassword jika sudah pakai Hash::make di controller
 }
